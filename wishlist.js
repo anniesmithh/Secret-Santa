@@ -79,7 +79,8 @@ async function saveWishlists(updatedWishlists) {
             throw new Error('Failed to save wishlists');
         }
         
-        wishlists = updatedWishlists;
+        // Clear cache to force fresh fetch next time
+        wishlists = null;
         // Also save to localStorage as backup
         localStorage.setItem('secretSantaWishlists', JSON.stringify(updatedWishlists));
         return true;
