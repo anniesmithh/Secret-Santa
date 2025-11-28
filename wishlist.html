@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Santa 2025 - Wishlists</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="polaroid-gallery">
+        <div class="polaroid" style="--rotation: -5deg; --delay: 0s;">
+            <img src="photo1.jpg" alt="Memory 1">
+        </div>
+        <div class="polaroid" style="--rotation: 3deg; --delay: 0.5s;">
+            <img src="photo2.jpg" alt="Memory 2">
+        </div>
+        <div class="polaroid" style="--rotation: -3deg; --delay: 1s;">
+            <img src="photo3.jpg" alt="Memory 3">
+        </div>
+        <div class="polaroid" style="--rotation: 4deg; --delay: 1.5s;">
+            <img src="photo4.jpg" alt="Memory 4">
+        </div>
+        <div class="polaroid" style="--rotation: -4deg; --delay: 2s;">
+            <img src="photo5.jpg" alt="Memory 5">
+        </div>
+        <div class="polaroid" style="--rotation: 2deg; --delay: 2.5s;">
+            <img src="photo6.jpg" alt="Memory 6">
+        </div>
+        <div class="polaroid" style="--rotation: -2deg; --delay: 3s;">
+            <img src="photo7.jpg" alt="Memory 7">
+        </div>
+        <div class="polaroid" style="--rotation: 5deg; --delay: 3.5s;">
+            <img src="photo8.jpg" alt="Memory 8">
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+        
+        <header>
+            <h1>🎁 Wishlist Manager</h1>
+            <div class="event-details">
+                <p><strong>Budget:</strong> £30</p>
+                <p><strong>Location:</strong> Granary Close</p>
+            </div>
+        </header>
+
+        <nav class="page-nav">
+            <a href="index.html" class="nav-link">🎅 Secret Santa Draw</a>
+            <a href="wishlist.html" class="nav-link active">🎁 Wishlists</a>
+        </nav>
+
+        <main>
+            <!-- Select Person Screen -->
+            <section id="selectPersonScreen" class="screen active">
+                <h2>Whose Wishlist?</h2>
+                <p class="instruction">Select a person to view or edit their wishlist</p>
+                
+                <div class="name-grid">
+                    <button class="name-btn" data-name="Annie">Annie</button>
+                    <button class="name-btn" data-name="Katie">Katie</button>
+                    <button class="name-btn" data-name="Andy">Andy</button>
+                    <button class="name-btn" data-name="Michelle">Michelle</button>
+                    <button class="name-btn" data-name="Raoul">Raoul</button>
+                    <button class="name-btn" data-name="Joyce">Joyce</button>
+                    <button class="name-btn" data-name="Vernon">Vernon</button>
+                </div>
+            </section>
+
+            <!-- Wishlist Screen -->
+            <section id="wishlistScreen" class="screen">
+                <div class="wishlist-header">
+                    <h2><span id="currentPersonName"></span>'s Wishlist</h2>
+                    <button id="backToSelectBtn" class="btn btn-secondary">← Back</button>
+                </div>
+
+                <!-- Add Item Form -->
+                <div class="add-item-section">
+                    <h3>Add Item</h3>
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="itemInput" 
+                            placeholder="Enter wishlist item (e.g., Blue scarf, Book about gardening)"
+                            autocomplete="off"
+                        >
+                        <button id="addItemBtn" class="btn btn-primary">Add</button>
+                    </div>
+                </div>
+
+                <!-- Wishlist Items -->
+                <div class="wishlist-items-section">
+                    <h3>Items (<span id="itemCount">0</span>)</h3>
+                    <ul id="wishlistItems"></ul>
+                    <p id="emptyMessage" class="empty-message">No items yet. Add some gift ideas above!</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Happy Holidays! 🎄</p>
+        </footer>
+    </div>
+
+    <script src="slideshow.js"></script>
+    <script src="wishlist.js"></script>
+</body>
+</html>
