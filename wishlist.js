@@ -159,6 +159,8 @@ async function addItem() {
     addItemBtn.textContent = 'Adding...';
     
     try {
+        // Force fresh fetch by clearing cache first
+        wishlists = null;
         const allWishlists = await getWishlists();
         
         if (!allWishlists[currentPerson]) {
@@ -171,6 +173,8 @@ async function addItem() {
         if (success) {
             itemInput.value = '';
             itemInput.focus();
+            // Force another fresh fetch to display
+            wishlists = null;
             await displayWishlist();
         }
     } catch (error) {
@@ -193,11 +197,15 @@ async function removeItem(index) {
     isLoading = true;
     
     try {
+        // Force fresh fetch by clearing cache first
+        wishlists = null;
         const allWishlists = await getWishlists();
         allWishlists[currentPerson].splice(index, 1);
         const success = await saveWishlists(allWishlists);
         
         if (success) {
+            // Force another fresh fetch to display
+            wishlists = null;
             await displayWishlist();
         }
     } catch (error) {
