@@ -107,9 +107,13 @@ async function selectPerson(name) {
     showScreen(wishlistScreen);
 }
 
-async function displayWishlist() {
-    if (isLoading) return;
+async function displayWishlist(forceDisplay = false) {
+    if (isLoading && !forceDisplay) {
+        console.log('displayWishlist blocked - isLoading is true');
+        return;
+    }
     
+    const wasLoading = isLoading;
     isLoading = true;
     showLoadingState();
     
@@ -141,7 +145,9 @@ async function displayWishlist() {
         console.error('Error displaying wishlist:', error);
         alert('Failed to load wishlist. Please refresh the page.');
     } finally {
-        isLoading = false;
+        if (!wasLoading) {
+            isLoading = false;
+        }
         hideLoadingState();
     }
 }
@@ -185,8 +191,8 @@ async function addItem() {
             console.log('Step 6: Clearing cache again');
             wishlists = null;
             
-            console.log('Step 7: Calling displayWishlist');
-            await displayWishlist();
+            console.log('Step 7: Calling displayWishlist with force=true');
+            await displayWishlist(true);
             
             console.log('Step 8: Display complete');
         }
@@ -219,7 +225,7 @@ async function removeItem(index) {
         if (success) {
             // Force another fresh fetch to display
             wishlists = null;
-            await displayWishlist();
+            await displayWishlist(true);
         }
     } catch (error) {
         console.error('Error removing item:', error);
