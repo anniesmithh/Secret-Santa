@@ -4,6 +4,9 @@ const slides = document.querySelectorAll('.slide');
 const totalSlides = slides.length;
 
 function showNextSlide() {
+    // Only run if slides exist
+    if (totalSlides === 0) return;
+    
     // Remove active class from current slide
     slides[currentSlide].classList.remove('active');
     
@@ -14,5 +17,7 @@ function showNextSlide() {
     slides[currentSlide].classList.add('active');
 }
 
-// Change slide every 5 seconds
-setInterval(showNextSlide, 5000);
+// Only start slideshow if slides exist
+if (totalSlides > 0) {
+    setInterval(showNextSlide, 5000);
+}
