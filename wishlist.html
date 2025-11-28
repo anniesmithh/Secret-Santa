@@ -1,240 +1,111 @@
-// Wishlist Manager with JSONBin.io Backend
-// This allows wishlists to be shared across all devices
-
-// DOM elements
-const selectPersonScreen = document.getElementById('selectPersonScreen');
-const wishlistScreen = document.getElementById('wishlistScreen');
-const currentPersonName = document.getElementById('currentPersonName');
-const itemInput = document.getElementById('itemInput');
-const addItemBtn = document.getElementById('addItemBtn');
-const wishlistItems = document.getElementById('wishlistItems');
-const itemCount = document.getElementById('itemCount');
-const emptyMessage = document.getElementById('emptyMessage');
-const backToSelectBtn = document.getElementById('backToSelectBtn');
-const nameButtons = document.querySelectorAll('.name-btn');
-
-// State
-let currentPerson = '';
-let wishlists = null;
-let isLoading = false;
-
-// Event listeners
-nameButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const name = button.getAttribute('data-name');
-        selectPerson(name);
-    });
-});
-
-addItemBtn.addEventListener('click', addItem);
-itemInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        addItem();
-    }
-});
-
-backToSelectBtn.addEventListener('click', () => {
-    showScreen(selectPersonScreen);
-    currentPerson = '';
-});
-
-// API Functions
-async function getWishlists() {
-    if (wishlists) return wishlists;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Santa 2025 - Wishlists</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="polaroid-gallery">
+        <div class="polaroid" style="--rotation: -5deg; --delay: 0s;">
+            <img src="photo1.jpg" alt="Memory 1">
+        </div>
+        <div class="polaroid" style="--rotation: 3deg; --delay: 0.5s;">
+            <img src="photo2.jpg" alt="Memory 2">
+        </div>
+        <div class="polaroid" style="--rotation: -3deg; --delay: 1s;">
+            <img src="photo3.jpg" alt="Memory 3">
+        </div>
+        <div class="polaroid" style="--rotation: 4deg; --delay: 1.5s;">
+            <img src="photo4.jpg" alt="Memory 4">
+        </div>
+        <div class="polaroid" style="--rotation: -4deg; --delay: 2s;">
+            <img src="photo5.jpg" alt="Memory 5">
+        </div>
+        <div class="polaroid" style="--rotation: 2deg; --delay: 2.5s;">
+            <img src="photo6.jpg" alt="Memory 6">
+        </div>
+        <div class="polaroid" style="--rotation: -2deg; --delay: 3s;">
+            <img src="photo7.jpg" alt="Memory 7">
+        </div>
+        <div class="polaroid" style="--rotation: 5deg; --delay: 3.5s;">
+            <img src="photo8.jpg" alt="Memory 8">
+        </div>
+    </div>
     
-    try {
-        const response = await fetch(`${CONFIG.API_URL}/b/${CONFIG.BIN_ID}/latest`, {
-            method: 'GET',
-            headers: {
-                'X-Master-Key': CONFIG.API_KEY
-            }
-        });
+    <div class="container">
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
         
-        if (!response.ok) {
-            throw new Error('Failed to fetch wishlists');
-        }
-        
-        const data = await response.json();
-        wishlists = data.record;
-        return wishlists;
-    } catch (error) {
-        console.error('Error fetching wishlists:', error);
-        // Fallback to localStorage if API fails
-        return getLocalWishlists();
-    }
-}
+        <header>
+            <h1>🎁 Wishlist Manager</h1>
+            <div class="event-details">
+                <p><strong>Budget:</strong> £30</p>
+                <p><strong>Location:</strong> Granary Close</p>
+            </div>
+        </header>
 
-async function saveWishlists(updatedWishlists) {
-    try {
-        const response = await fetch(`${CONFIG.API_URL}/b/${CONFIG.BIN_ID}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': CONFIG.API_KEY
-            },
-            body: JSON.stringify(updatedWishlists)
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to save wishlists');
-        }
-        
-        // Clear cache to force fresh fetch next time
-        wishlists = null;
-        // Also save to localStorage as backup
-        localStorage.setItem('secretSantaWishlists', JSON.stringify(updatedWishlists));
-        return true;
-    } catch (error) {
-        console.error('Error saving wishlists:', error);
-        alert('Failed to save wishlist. Please check your internet connection and try again.');
-        return false;
-    }
-}
+        <nav class="page-nav">
+            <a href="index.html" class="nav-link">🎅 Secret Santa Draw</a>
+            <a href="wishlist.html" class="nav-link active">🎁 Wishlists</a>
+        </nav>
 
-// Fallback to localStorage
-function getLocalWishlists() {
-    const stored = localStorage.getItem('secretSantaWishlists');
-    if (stored) {
-        return JSON.parse(stored);
-    }
-    return INITIAL_WISHLISTS;
-}
+        <main>
+            <!-- Select Person Screen -->
+            <section id="selectPersonScreen" class="screen active">
+                <h2>Whose Wishlist?</h2>
+                <p class="instruction">Select a person to view or edit their wishlist</p>
+                
+                <div class="name-grid">
+                    <button class="name-btn" data-name="Annie">Annie</button>
+                    <button class="name-btn" data-name="Katie">Katie</button>
+                    <button class="name-btn" data-name="Andy">Andy</button>
+                    <button class="name-btn" data-name="Michelle">Michelle</button>
+                    <button class="name-btn" data-name="Raoul">Raoul</button>
+                    <button class="name-btn" data-name="Joyce">Joyce</button>
+                    <button class="name-btn" data-name="Vernon">Vernon</button>
+                </div>
+            </section>
 
-async function selectPerson(name) {
-    currentPerson = name;
-    currentPersonName.textContent = name;
-    await displayWishlist();
-    showScreen(wishlistScreen);
-}
+            <!-- Wishlist Screen -->
+            <section id="wishlistScreen" class="screen">
+                <div class="wishlist-header">
+                    <h2><span id="currentPersonName"></span>'s Wishlist</h2>
+                    <button id="backToSelectBtn" class="btn btn-secondary">← Back</button>
+                </div>
 
-async function displayWishlist() {
-    if (isLoading) return;
-    
-    isLoading = true;
-    showLoadingState();
-    
-    try {
-        const allWishlists = await getWishlists();
-        const items = allWishlists[currentPerson] || [];
-        
-        wishlistItems.innerHTML = '';
-        itemCount.textContent = items.length;
-        
-        if (items.length === 0) {
-            emptyMessage.style.display = 'block';
-        } else {
-            emptyMessage.style.display = 'none';
-            
-            items.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.className = 'wishlist-item';
-                li.innerHTML = `
-                    <span class="item-text">${escapeHtml(item)}</span>
-                    <button class="remove-item-btn" onclick="removeItem(${index})">×</button>
-                `;
-                wishlistItems.appendChild(li);
-            });
-        }
-    } catch (error) {
-        console.error('Error displaying wishlist:', error);
-        alert('Failed to load wishlist. Please refresh the page.');
-    } finally {
-        isLoading = false;
-        hideLoadingState();
-    }
-}
+                <!-- Add Item Form -->
+                <div class="add-item-section">
+                    <h3>Add Item</h3>
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="itemInput" 
+                            placeholder="Enter wishlist item (e.g., Blue scarf, Book about gardening)"
+                            autocomplete="off"
+                        >
+                        <button id="addItemBtn" class="btn btn-primary">Add</button>
+                    </div>
+                </div>
 
-async function addItem() {
-    const item = itemInput.value.trim();
-    
-    if (item === '') {
-        alert('Please enter an item!');
-        return;
-    }
-    
-    if (isLoading) return;
-    
-    isLoading = true;
-    addItemBtn.disabled = true;
-    addItemBtn.textContent = 'Adding...';
-    
-    try {
-        // Force fresh fetch by clearing cache first
-        wishlists = null;
-        const allWishlists = await getWishlists();
-        
-        if (!allWishlists[currentPerson]) {
-            allWishlists[currentPerson] = [];
-        }
-        
-        allWishlists[currentPerson].push(item);
-        const success = await saveWishlists(allWishlists);
-        
-        if (success) {
-            itemInput.value = '';
-            itemInput.focus();
-            // Force another fresh fetch to display
-            wishlists = null;
-            await displayWishlist();
-        }
-    } catch (error) {
-        console.error('Error adding item:', error);
-        alert('Failed to add item. Please try again.');
-    } finally {
-        isLoading = false;
-        addItemBtn.disabled = false;
-        addItemBtn.textContent = 'Add';
-    }
-}
+                <!-- Wishlist Items -->
+                <div class="wishlist-items-section">
+                    <h3>Items (<span id="itemCount">0</span>)</h3>
+                    <ul id="wishlistItems"></ul>
+                    <p id="emptyMessage" class="empty-message">No items yet. Add some gift ideas above!</p>
+                </div>
+            </section>
+        </main>
 
-async function removeItem(index) {
-    if (isLoading) return;
-    
-    if (!confirm('Are you sure you want to remove this item?')) {
-        return;
-    }
-    
-    isLoading = true;
-    
-    try {
-        // Force fresh fetch by clearing cache first
-        wishlists = null;
-        const allWishlists = await getWishlists();
-        allWishlists[currentPerson].splice(index, 1);
-        const success = await saveWishlists(allWishlists);
-        
-        if (success) {
-            // Force another fresh fetch to display
-            wishlists = null;
-            await displayWishlist();
-        }
-    } catch (error) {
-        console.error('Error removing item:', error);
-        alert('Failed to remove item. Please try again.');
-    } finally {
-        isLoading = false;
-    }
-}
+        <footer>
+            <p>Happy Holidays! 🎄</p>
+        </footer>
+    </div>
 
-function showScreen(screen) {
-    selectPersonScreen.classList.remove('active');
-    wishlistScreen.classList.remove('active');
-    screen.classList.add('active');
-}
-
-function showLoadingState() {
-    wishlistItems.innerHTML = '<li style="text-align: center; color: #666;">Loading...</li>';
-}
-
-function hideLoadingState() {
-    // Loading state is cleared by displayWishlist
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// Initialize
-showScreen(selectPersonScreen);
+    <script src="slideshow.js"></script>
+    <script src="config.js"></script>
+    <script src="wishlist.js"></script>
+</body>
+</html>
