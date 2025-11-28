@@ -117,6 +117,8 @@ async function displayWishlist() {
         const allWishlists = await getWishlists();
         const items = allWishlists[currentPerson] || [];
         
+        console.log('Displaying wishlist for', currentPerson, '- items:', items);
+        
         wishlistItems.innerHTML = '';
         itemCount.textContent = items.length;
         
@@ -159,23 +161,34 @@ async function addItem() {
     addItemBtn.textContent = 'Adding...';
     
     try {
-        // Force fresh fetch by clearing cache first
+        console.log('Step 1: Clearing cache');
         wishlists = null;
+        
+        console.log('Step 2: Fetching wishlists');
         const allWishlists = await getWishlists();
         
         if (!allWishlists[currentPerson]) {
             allWishlists[currentPerson] = [];
         }
         
+        console.log('Step 3: Adding item to', currentPerson);
         allWishlists[currentPerson].push(item);
+        
+        console.log('Step 4: Saving to API');
         const success = await saveWishlists(allWishlists);
         
         if (success) {
+            console.log('Step 5: Save successful, clearing input');
             itemInput.value = '';
             itemInput.focus();
-            // Force another fresh fetch to display
+            
+            console.log('Step 6: Clearing cache again');
             wishlists = null;
+            
+            console.log('Step 7: Calling displayWishlist');
             await displayWishlist();
+            
+            console.log('Step 8: Display complete');
         }
     } catch (error) {
         console.error('Error adding item:', error);
