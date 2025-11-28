@@ -4,7 +4,7 @@
 
 const CONFIG = {
     // JSONBin.io credentials - configured and ready to use!
-    API_KEY: '$2a$10$6msYwW8MjOCYabakIytZL.sIBynImmS4Sg47522n5AMGOvOv6xDZO',
+    API_KEY: '$2a$10$98BiV1WFSOzXJh8tY8u00.pgSCflnX6jLKCnLzr6bgUysyxUeBqRe',
     BIN_ID: '692999c0ae596e708f76678a',
     API_URL: 'https://api.jsonbin.io/v3'
 };
